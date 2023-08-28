@@ -18,36 +18,39 @@ void  message(int pid, char *str)
 {
     int		i;
     char	c;
-
+    i = 8;
     while (*str)
     {
-        i = 8;
         c = *str;
-
-        str++;
         while (i--)
         {
-            if (c >> i & 1)
+            if ((c >> i) & 1)
                 kill(pid, SIGUSR2);
             else
                 kill(pid, SIGUSR1); // envia SIGUR1 cuando el bit es cero
             usleep(100);
         }
+        str++;
+        i = 8;
     }
-    i = 8;
-    while (i--)
-    {
-        kill(pid, SIGUSR1);
-        usleep(100);
-    }
-
 }
 
+size_t	ft_strlen(const char *str)
+{
+    size_t	i;
+
+    i = 0;
+    while (str[i])
+        i++;
+    return (i);
+}
 
 int main(int argc, char *argv[])
 {
     struct sigaction sa;
 
+    //if (argc != 3 || ft_strlen(argv[2]))
+      //  write(1, "Errar\n", 6);
     sa.sa_flags = SA_SIGINFO;
     sa.sa_sigaction = handle_signal;
     if (sigaction(SIGUSR1, &sa, NULL) == -1)
